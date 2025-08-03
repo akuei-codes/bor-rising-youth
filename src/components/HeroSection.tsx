@@ -1,178 +1,79 @@
-import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Users, MapPin, Star } from "lucide-react";
-import { ParticleSystem } from "./ParticleSystem";
-import { NeuroMorphicCard } from "./NeuroMorphicCard";
-import { QuantumLoader } from "./QuantumLoader";
 import heroImage from "@/assets/hero-bor-rising.jpg";
 
 const HeroSection = () => {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [currentParticleTheme, setCurrentParticleTheme] = useState<'neural' | 'quantum' | 'holographic'>('neural');
-
-  useEffect(() => {
-    setIsLoaded(true);
-    
-    // Cycle through particle themes
-    const themeInterval = setInterval(() => {
-      setCurrentParticleTheme(prev => {
-        const themes: Array<'neural' | 'quantum' | 'holographic'> = ['neural', 'quantum', 'holographic'];
-        const currentIndex = themes.indexOf(prev);
-        return themes[(currentIndex + 1) % themes.length];
-      });
-    }, 8000);
-
-    return () => clearInterval(themeInterval);
-  }, []);
-
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden perspective-container">
-      {/* Multi-layered Background System */}
+    <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
+      {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
-        {/* Base hero image */}
-        <div 
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `url(${heroImage})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            filter: 'contrast(1.1) saturate(1.2)',
-          }}
+        <img
+          src={heroImage}
+          alt="Bor County Youth Community"
+          className="w-full h-full object-cover"
         />
-        
-        {/* Dynamic gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-secondary/80 via-secondary/60 to-background/90 animate-pulse" 
-             style={{ animationDuration: '4s' }}></div>
-        
-        {/* Neural network particle system */}
-        <ParticleSystem 
-          particleCount={80} 
-          theme={currentParticleTheme}
-          interactive={true}
-          className="z-10 opacity-70"
-        />
-        
-        {/* Holographic scanning lines */}
-        <div className="absolute inset-0 z-20 opacity-30">
-          {[...Array(5)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute w-full h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent"
-              style={{
-                top: `${20 + i * 15}%`,
-                animation: `data-stream ${3 + i * 0.5}s linear infinite`,
-                animationDelay: `${i * 0.8}s`
-              }}
-            />
-          ))}
-        </div>
+        <div className="absolute inset-0 bg-gradient-to-b from-secondary/80 via-secondary/60 to-background/90" />
       </div>
 
-      {/* Ultra-Advanced Content Layer */}
-      <div className="relative z-30 text-center space-y-8 px-4 max-w-6xl mx-auto">
-        {/* Floating status badge with neural animation */}
-        <div className="flex justify-center">
-          <NeuroMorphicCard
-            intensity="subtle"
-            glowEffect={true}
-            className="inline-flex items-center space-x-2 px-6 py-3 bg-white/5 border-primary/30"
-          >
-            <div className="relative">
-              <QuantumLoader size="sm" variant="pulse" />
-              <span className="absolute inset-0 bg-primary rounded-full animate-ping opacity-30"></span>
-            </div>
-            <span className="holographic-text text-sm font-medium">
-              <Star className="h-4 w-4 inline mr-2" />
-              Neural Network: {Math.floor(Math.random() * 1000 + 5000)}+ Youth Connected
-            </span>
-          </NeuroMorphicCard>
-        </div>
+      {/* Content */}
+      <div className="relative z-10 container mx-auto px-4 text-center">
+        <div className="max-w-4xl mx-auto space-y-8">
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 bg-primary/10 backdrop-blur-sm border border-primary/20 rounded-full px-4 py-2 text-sm text-primary">
+            <Star className="h-4 w-4" />
+            <span>Celebrating Bor County Youth</span>
+          </div>
 
-        {/* Revolutionary Main Heading with 3D Effects */}
-        <div className="space-y-6 floating-element">
-          <div className="relative">
-            <h1 className="text-5xl md:text-7xl lg:text-9xl font-black text-primary-foreground leading-tight card-3d">
-              <span className="holographic-text glitch-hover neural-glow">
-                BorNet
+          {/* Main Heading */}
+          <div className="space-y-4">
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-primary-foreground leading-tight">
+              <span className="bg-gradient-sunset bg-clip-text text-transparent">
+                Bor Rising
               </span>
             </h1>
-            
-            {/* Dynamic subtitle with typewriter effect */}
-            <div className="mt-4 h-8 md:h-12">
-              <p className="text-xl md:text-3xl text-primary-foreground/90 font-light tracking-wide">
-                <span className="morphing-border px-4 py-2 inline-block">
-                  {isLoaded ? 'Empowering Digital Futures' : ''}
-                </span>
-              </p>
+            <p className="text-xl md:text-2xl text-primary-foreground/90 font-medium">
+              Empowering the youth of Bor County through connection, opportunity, and cultural pride
+            </p>
+          </div>
+
+          {/* Description */}
+          <p className="text-lg text-primary-foreground/80 max-w-2xl mx-auto leading-relaxed">
+            Join a digital community that showcases the talents, stories, and aspirations of 
+            Bor County's youth, both at home and in the diaspora.
+          </p>
+
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+            <Button size="lg" className="bg-gradient-hero hover:shadow-cultural transition-all text-lg px-8 py-6">
+              <Users className="h-5 w-5 mr-2" />
+              Join Our Community
+              <ArrowRight className="h-5 w-5 ml-2" />
+            </Button>
+            <Button size="lg" variant="outline" className="text-lg px-8 py-6 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10">
+              <MapPin className="h-5 w-5 mr-2" />
+              Explore Profiles
+            </Button>
+          </div>
+
+          {/* Stats */}
+          <div className="flex flex-wrap justify-center gap-8 pt-8">
+            <div className="text-center">
+              <div className="text-3xl font-bold text-primary-glow">500+</div>
+              <div className="text-sm text-primary-foreground/70">Youth Profiles</div>
             </div>
-            
-            {/* Floating descriptors */}
-            <div className="absolute -left-20 -top-10 hidden lg:block">
-              <NeuroMorphicCard intensity="subtle" className="px-3 py-1 text-xs text-primary">
-                Neural
-              </NeuroMorphicCard>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-primary-glow">5</div>
+              <div className="text-sm text-primary-foreground/70">Payams Connected</div>
             </div>
-            <div className="absolute -right-16 top-16 hidden lg:block">
-              <NeuroMorphicCard intensity="subtle" className="px-3 py-1 text-xs text-secondary">
-                Quantum
-              </NeuroMorphicCard>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-primary-glow">50+</div>
+              <div className="text-sm text-primary-foreground/70">Success Stories</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-primary-glow">20+</div>
+              <div className="text-sm text-primary-foreground/70">Opportunities Posted</div>
             </div>
           </div>
-        </div>
-
-        {/* Revolutionary CTA Buttons with Neural Enhancement */}
-        <div className="flex flex-col sm:flex-row gap-6 justify-center items-center magnetic-element">
-          <button className="neural-button px-10 py-4 text-lg font-bold text-white rounded-xl relative overflow-hidden group">
-            <span className="relative z-10 flex items-center space-x-2">
-              <Users className="h-5 w-5" />
-              <span>Initialize Connection</span>
-              <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-            </span>
-            <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 group-hover:scale-110 transition-transform duration-300"></div>
-          </button>
-          
-          <NeuroMorphicCard 
-            intensity="medium" 
-            glowEffect={true}
-            className="px-8 py-4 text-lg font-semibold text-primary-foreground border-primary/40 hover:border-primary/80 transition-all duration-500"
-          >
-            <span className="flex items-center space-x-2">
-              <MapPin className="h-5 w-5" />
-              <span>Explore Network</span>
-              <div className="w-3 h-3 border border-current rounded-full animate-spin"></div>
-            </span>
-          </NeuroMorphicCard>
-        </div>
-
-        {/* Real-time Neural Network Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-12">
-          {[
-            { value: '1,247+', label: 'Neural Nodes', color: 'primary', icon: '🧠' },
-            { value: '12', label: 'Network Clusters', color: 'secondary', icon: '🌐' },
-            { value: '89', label: 'Success Algorithms', color: 'accent', icon: '⚡' },
-            { value: '156', label: 'Quantum Opportunities', color: 'primary', icon: '🚀' }
-          ].map((stat, index) => (
-            <NeuroMorphicCard 
-              key={index}
-              intensity="medium"
-              glowEffect={true}
-              className="text-center space-y-3 p-4 data-stream-bg"
-            >
-              <div className="text-2xl mb-2">{stat.icon}</div>
-              <div className={`text-2xl md:text-4xl font-black holographic-text`}>
-                {stat.value}
-              </div>
-              <div className="text-sm md:text-base text-primary-foreground/80 font-medium">
-                {stat.label}
-              </div>
-              <div className="w-full h-1 bg-background/20 rounded-full overflow-hidden">
-                <div 
-                  className={`h-full bg-gradient-to-r from-primary to-primary/50 rounded-full animate-pulse`}
-                  style={{ width: `${60 + Math.random() * 40}%` }}
-                ></div>
-              </div>
-            </NeuroMorphicCard>
-          ))}
         </div>
       </div>
 

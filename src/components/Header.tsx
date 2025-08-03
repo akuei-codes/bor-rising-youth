@@ -15,27 +15,27 @@ const Header = () => {
               <Users className="h-5 w-5 text-primary-foreground" />
             </div>
             <div className="flex flex-col">
-              <span className="font-bold text-lg text-foreground">BorNet</span>
+              <span className="font-bold text-lg text-foreground">Bor Rising</span>
               <span className="text-xs text-muted-foreground hidden sm:block">Youth Community</span>
             </div>
           </div>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <a href="/" className="text-foreground hover:text-primary transition-colors">
+            <a href="#" className="text-foreground hover:text-primary transition-colors">
               Home
             </a>
-            <a href="/profiles" className="text-foreground hover:text-primary transition-colors">
+            <a href="#" className="text-foreground hover:text-primary transition-colors">
               Profiles
             </a>
-            <a href="/map" className="text-foreground hover:text-primary transition-colors flex items-center gap-1">
+            <a href="#" className="text-foreground hover:text-primary transition-colors flex items-center gap-1">
               <MapPin className="h-4 w-4" />
               Map
             </a>
-            <a href="/community" className="text-foreground hover:text-primary transition-colors">
-              Community
+            <a href="#" className="text-foreground hover:text-primary transition-colors">
+              Projects
             </a>
-            <a href="/opportunities" className="text-foreground hover:text-primary transition-colors">
+            <a href="#" className="text-foreground hover:text-primary transition-colors">
               Opportunities
             </a>
           </nav>
@@ -69,20 +69,20 @@ const Header = () => {
         {isMenuOpen && (
           <div className="md:hidden border-t border-border mt-2 pt-4 pb-4 space-y-4">
             <nav className="flex flex-col space-y-3">
-              <a href="/" className="text-foreground hover:text-primary transition-colors">
+              <a href="#" className="text-foreground hover:text-primary transition-colors">
                 Home
               </a>
-              <a href="/profiles" className="text-foreground hover:text-primary transition-colors">
+              <a href="#" className="text-foreground hover:text-primary transition-colors">
                 Profiles
               </a>
-              <a href="/map" className="text-foreground hover:text-primary transition-colors flex items-center gap-1">
+              <a href="#" className="text-foreground hover:text-primary transition-colors flex items-center gap-1">
                 <MapPin className="h-4 w-4" />
                 Map
               </a>
-              <a href="/community" className="text-foreground hover:text-primary transition-colors">
-                Community
+              <a href="#" className="text-foreground hover:text-primary transition-colors">
+                Projects
               </a>
-              <a href="/opportunities" className="text-foreground hover:text-primary transition-colors">
+              <a href="#" className="text-foreground hover:text-primary transition-colors">
                 Opportunities
               </a>
             </nav>
