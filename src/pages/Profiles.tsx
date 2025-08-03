@@ -107,7 +107,7 @@ const payamOptions = [
 const Profiles = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedPayam, setSelectedPayam] = useState("all");
-  const [selectedSkill, setSelectedSkill] = useState("");
+  const [selectedSkill, setSelectedSkill] = useState("all");
   const [sortBy, setSortBy] = useState("name");
 
   const allSkills = Array.from(new Set(mockProfiles.flatMap(profile => profile.skills)));
@@ -120,7 +120,7 @@ const Profiles = () => {
     const matchesPayam = selectedPayam === "all" || 
                         profile.payam.toLowerCase() === selectedPayam;
     
-    const matchesSkill = !selectedSkill || 
+    const matchesSkill = selectedSkill === "all" || !selectedSkill || 
                         profile.skills.some(skill => skill.toLowerCase().includes(selectedSkill.toLowerCase()));
     
     return matchesSearch && matchesPayam && matchesSkill;
@@ -201,7 +201,7 @@ const Profiles = () => {
                 <SelectValue placeholder="Filter by skill" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Skills</SelectItem>
+                <SelectItem value="all">All Skills</SelectItem>
                 {allSkills.map(skill => (
                   <SelectItem key={skill} value={skill.toLowerCase()}>
                     {skill}
@@ -236,11 +236,11 @@ const Profiles = () => {
                 </button>
               </Badge>
             )}
-            {selectedSkill && (
+            {selectedSkill && selectedSkill !== "all" && (
               <Badge variant="secondary" className="gap-1">
                 {selectedSkill}
                 <button 
-                  onClick={() => setSelectedSkill("")}
+                  onClick={() => setSelectedSkill("all")}
                   className="ml-1 hover:text-destructive"
                 >
                   ×
