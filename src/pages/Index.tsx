@@ -69,7 +69,7 @@ const Index = () => {
       <section className="py-16 bg-gradient-hero">
         <div className="container mx-auto px-4 text-center space-y-8">
           <h2 className="text-3xl md:text-4xl font-bold text-primary-foreground">
-            Ready to Join Bor Rising?
+            Ready to Join BorNet?
           </h2>
           <p className="text-xl text-primary-foreground/90 max-w-2xl mx-auto">
             Be part of a movement that's showcasing the incredible talent and potential 
@@ -97,7 +97,7 @@ const Index = () => {
                 <div className="w-8 h-8 bg-gradient-hero rounded-full flex items-center justify-center">
                   <Users className="h-5 w-5 text-primary-foreground" />
                 </div>
-                <span className="font-bold text-lg">Bor Rising</span>
+                <span className="font-bold text-lg">BorNet</span>
               </div>
               <p className="text-sm text-secondary-foreground/80">
                 Empowering the youth of Bor County through digital connection and cultural pride.
@@ -136,7 +136,7 @@ const Index = () => {
           </div>
           
           <div className="border-t border-secondary-foreground/20 mt-8 pt-8 text-center text-sm text-secondary-foreground/60">
-            <p>&copy; 2024 Bor Rising. Made with ❤️ for the youth of Bor County, South Sudan.</p>
+            <p>&copy; 2024 BorNet. Made with ❤️ for the youth of Bor County, South Sudan.</p>
           </div>
         </div>
       </footer>

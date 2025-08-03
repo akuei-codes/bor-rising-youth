@@ -15,7 +15,7 @@ const Header = () => {
               <Users className="h-5 w-5 text-primary-foreground" />
             </div>
             <div className="flex flex-col">
-              <span className="font-bold text-lg text-foreground">Bor Rising</span>
+              <span className="font-bold text-lg text-foreground">BorNet</span>
               <span className="text-xs text-muted-foreground hidden sm:block">Youth Community</span>
             </div>
           </div>

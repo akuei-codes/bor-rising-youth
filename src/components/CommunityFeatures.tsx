@@ -95,7 +95,7 @@ const CommunityFeatures = () => {
             Community Features
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Discover the tools and features that make Bor Rising a thriving digital community
+            Discover the tools and features that make BorNet a thriving digital community
           </p>
         </div>
 
