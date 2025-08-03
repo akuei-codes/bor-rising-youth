@@ -22,20 +22,20 @@ const Header = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <a href="#" className="text-foreground hover:text-primary transition-colors">
+            <a href="/" className="text-foreground hover:text-primary transition-colors">
               Home
             </a>
-            <a href="#" className="text-foreground hover:text-primary transition-colors">
+            <a href="/profiles" className="text-foreground hover:text-primary transition-colors">
               Profiles
             </a>
-            <a href="#" className="text-foreground hover:text-primary transition-colors flex items-center gap-1">
+            <a href="/map" className="text-foreground hover:text-primary transition-colors flex items-center gap-1">
               <MapPin className="h-4 w-4" />
               Map
             </a>
-            <a href="#" className="text-foreground hover:text-primary transition-colors">
+            <a href="/projects" className="text-foreground hover:text-primary transition-colors">
               Projects
             </a>
-            <a href="#" className="text-foreground hover:text-primary transition-colors">
+            <a href="/opportunities" className="text-foreground hover:text-primary transition-colors">
               Opportunities
             </a>
           </nav>
@@ -46,11 +46,11 @@ const Header = () => {
               <Globe className="h-4 w-4 mr-1" />
               EN
             </Button>
-            <Button variant="outline" size="sm">
-              Sign In
+            <Button variant="outline" size="sm" asChild>
+              <a href="/signin">Sign In</a>
             </Button>
-            <Button size="sm" className="bg-gradient-hero hover:shadow-warm transition-all">
-              Join Community
+            <Button size="sm" className="bg-gradient-hero hover:shadow-warm transition-all" asChild>
+              <a href="/join">Join Community</a>
             </Button>
           </div>
 
@@ -69,29 +69,29 @@ const Header = () => {
         {isMenuOpen && (
           <div className="md:hidden border-t border-border mt-2 pt-4 pb-4 space-y-4">
             <nav className="flex flex-col space-y-3">
-              <a href="#" className="text-foreground hover:text-primary transition-colors">
+              <a href="/" className="text-foreground hover:text-primary transition-colors">
                 Home
               </a>
-              <a href="#" className="text-foreground hover:text-primary transition-colors">
+              <a href="/profiles" className="text-foreground hover:text-primary transition-colors">
                 Profiles
               </a>
-              <a href="#" className="text-foreground hover:text-primary transition-colors flex items-center gap-1">
+              <a href="/map" className="text-foreground hover:text-primary transition-colors flex items-center gap-1">
                 <MapPin className="h-4 w-4" />
                 Map
               </a>
-              <a href="#" className="text-foreground hover:text-primary transition-colors">
+              <a href="/projects" className="text-foreground hover:text-primary transition-colors">
                 Projects
               </a>
-              <a href="#" className="text-foreground hover:text-primary transition-colors">
+              <a href="/opportunities" className="text-foreground hover:text-primary transition-colors">
                 Opportunities
               </a>
             </nav>
             <div className="flex flex-col space-y-2 pt-4 border-t border-border">
-              <Button variant="outline" size="sm" className="w-full">
-                Sign In
+              <Button variant="outline" size="sm" className="w-full" asChild>
+                <a href="/signin">Sign In</a>
               </Button>
-              <Button size="sm" className="w-full bg-gradient-hero hover:shadow-warm transition-all">
-                Join Community
+              <Button size="sm" className="w-full bg-gradient-hero hover:shadow-warm transition-all" asChild>
+                <a href="/join">Join Community</a>
               </Button>
             </div>
           </div>
