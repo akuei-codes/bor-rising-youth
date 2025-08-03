@@ -130,8 +130,10 @@ const YouthProfileCard = ({
               </button>
             </div>
 
-            <Button size="sm" variant="outline" className="text-xs">
-              View Profile
+            <Button size="sm" variant="outline" className="text-xs" asChild>
+              <a href={`/profile/${name.toLowerCase().replace(/\s+/g, '-')}`}>
+                View Profile
+              </a>
             </Button>
           </div>
         </div>
