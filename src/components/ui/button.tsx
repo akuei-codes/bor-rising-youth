@@ -18,6 +18,9 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        hero: "bg-gradient-hero text-primary-foreground hover:shadow-cultural transition-all duration-300 hover:scale-[1.02]",
+        cultural: "bg-gradient-earth text-primary-foreground hover:shadow-warm transition-all duration-300",
+        payam: "bg-payam-anyidi text-white hover:bg-payam-anyidi/90 hover:shadow-warm transition-all",
       },
       size: {
         default: "h-10 px-4 py-2",

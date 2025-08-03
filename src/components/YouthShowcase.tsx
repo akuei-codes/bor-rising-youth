@@ -1,0 +1,234 @@
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import YouthProfileCard from "./YouthProfileCard";
+import { Filter, Search, Grid, List } from "lucide-react";
+
+const YouthShowcase = () => {
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [filterOpen, setFilterOpen] = useState(false);
+
+  // Mock data for youth profiles
+  const youthProfiles = [
+    {
+      name: "Akech Deng",
+      age: 24,
+      payam: "Jalle",
+      payamColor: "#059669",
+      profession: "Software Developer",
+      education: "Computer Science, University of Juba",
+      skills: ["React", "Python", "UI/UX Design", "Community Outreach"],
+      bio: "Passionate about using technology to solve local problems. Currently developing apps for agricultural management in rural communities.",
+      isVerified: true,
+      endorsements: 45,
+      spotlightWeek: true
+    },
+    {
+      name: "Peter Mach",
+      age: 22,
+      payam: "Anyidi",
+      payamColor: "#D97706",
+      profession: "Agricultural Extension Officer",
+      education: "Agricultural Sciences, Upper Nile University",
+      skills: ["Sustainable Farming", "Community Training", "Project Management"],
+      bio: "Working to improve crop yields and introduce modern farming techniques to smallholder farmers across Bor County.",
+      isVerified: true,
+      endorsements: 32
+    },
+    {
+      name: "Mary Ajak",
+      age: 26,
+      payam: "Baidit",
+      payamColor: "#2563EB",
+      profession: "Nurse & Health Educator",
+      education: "Nursing, Juba College of Nursing",
+      skills: ["Primary Healthcare", "Community Health", "Public Speaking", "Health Education"],
+      bio: "Dedicated to improving healthcare access in rural areas. Runs health awareness campaigns and maternal care programs.",
+      isVerified: true,
+      endorsements: 38
+    },
+    {
+      name: "Daniel Majok",
+      age: 20,
+      payam: "Kolnyang",
+      payamColor: "#7C3AED",
+      profession: "Student & Youth Organizer",
+      education: "Business Administration, University of Bor",
+      skills: ["Leadership", "Event Planning", "Public Speaking", "Social Media"],
+      bio: "Student leader organizing youth empowerment workshops and cultural events. Advocate for educational opportunities.",
+      isVerified: false,
+      endorsements: 28
+    },
+    {
+      name: "Grace Ayen",
+      age: 25,
+      payam: "Makuach",
+      payamColor: "#DC2626",
+      profession: "Teacher & Artist",
+      education: "Education, University of Juba",
+      skills: ["Primary Education", "Traditional Dance", "Art Therapy", "Cultural Preservation"],
+      bio: "Primary school teacher promoting cultural heritage through art and traditional storytelling in modern education.",
+      isVerified: true,
+      endorsements: 41
+    },
+    {
+      name: "John Garang",
+      age: 23,
+      payam: "Jalle",
+      payamColor: "#059669",
+      profession: "Entrepreneur",
+      education: "Business Management, Catholic University",
+      skills: ["Business Development", "Marketing", "Financial Planning", "Team Leadership"],
+      bio: "Founded a youth-led micro-finance cooperative supporting small businesses in Bor County.",
+      isVerified: false,
+      endorsements: 29
+    }
+  ];
+
+  return (
+    <section className="py-16 bg-muted/20">
+      <div className="container mx-auto px-4">
+        <div className="text-center space-y-4 mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground">
+            Youth Profiles
+          </h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Meet the inspiring young people of Bor County who are making a difference 
+            in their communities and beyond.
+          </p>
+        </div>
+
+        {/* Controls */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <input
+                type="text"
+                placeholder="Search by name, skill, or profession..."
+                className="pl-10 pr-4 py-2 w-80 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+              />
+            </div>
+            
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setFilterOpen(!filterOpen)}
+              className="flex items-center gap-2"
+            >
+              <Filter className="h-4 w-4" />
+              Filters
+            </Button>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">View:</span>
+            <div className="flex border border-border rounded-lg overflow-hidden">
+              <Button
+                variant={viewMode === 'grid' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setViewMode('grid')}
+                className="rounded-none"
+              >
+                <Grid className="h-4 w-4" />
+              </Button>
+              <Button
+                variant={viewMode === 'list' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setViewMode('list')}
+                className="rounded-none"
+              >
+                <List className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Filter Panel */}
+        {filterOpen && (
+          <div className="bg-card border border-border rounded-lg p-6 mb-8 space-y-4">
+            <h3 className="font-semibold text-foreground mb-4">Filter Options</h3>
+            
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">Payam</label>
+                <select className="w-full border border-border rounded-md px-3 py-2 bg-background focus:outline-none focus:ring-2 focus:ring-primary/20">
+                  <option value="">All Payams</option>
+                  <option value="anyidi">Anyidi</option>
+                  <option value="baidit">Baidit</option>
+                  <option value="jalle">Jalle</option>
+                  <option value="kolnyang">Kolnyang</option>
+                  <option value="makuach">Makuach</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">Age Range</label>
+                <select className="w-full border border-border rounded-md px-3 py-2 bg-background focus:outline-none focus:ring-2 focus:ring-primary/20">
+                  <option value="">All Ages</option>
+                  <option value="18-22">18-22</option>
+                  <option value="23-27">23-27</option>
+                  <option value="28-32">28-32</option>
+                  <option value="33+">33+</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">Profession</label>
+                <select className="w-full border border-border rounded-md px-3 py-2 bg-background focus:outline-none focus:ring-2 focus:ring-primary/20">
+                  <option value="">All Professions</option>
+                  <option value="technology">Technology</option>
+                  <option value="healthcare">Healthcare</option>
+                  <option value="education">Education</option>
+                  <option value="agriculture">Agriculture</option>
+                  <option value="business">Business</option>
+                  <option value="arts">Arts & Culture</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">Verification</label>
+                <select className="w-full border border-border rounded-md px-3 py-2 bg-background focus:outline-none focus:ring-2 focus:ring-primary/20">
+                  <option value="">All Users</option>
+                  <option value="verified">Verified Only</option>
+                  <option value="unverified">Unverified</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2 pt-4 border-t border-border">
+              <Button variant="outline" size="sm" onClick={() => setFilterOpen(false)}>
+                Clear Filters
+              </Button>
+              <Button size="sm">
+                Apply Filters
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* Youth Profiles Grid */}
+        <div className={`grid gap-6 ${
+          viewMode === 'grid' 
+            ? 'md:grid-cols-2 lg:grid-cols-3' 
+            : 'max-w-4xl mx-auto'
+        }`}>
+          {youthProfiles.map((profile, index) => (
+            <YouthProfileCard key={index} {...profile} />
+          ))}
+        </div>
+
+        {/* Load More */}
+        <div className="text-center mt-12">
+          <Button size="lg" variant="outline" className="px-8">
+            Load More Profiles
+          </Button>
+          <p className="text-sm text-muted-foreground mt-4">
+            Showing 6 of 475 youth profiles
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default YouthShowcase;
