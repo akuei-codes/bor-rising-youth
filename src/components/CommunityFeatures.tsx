@@ -202,34 +202,42 @@ const CommunityFeatures = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-start gap-4">
-                <div className="w-16 h-16 bg-gradient-hero rounded-full flex items-center justify-center text-primary-foreground text-lg font-bold">
-                  AD
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-foreground">{spotlightUser.name}</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Age {spotlightUser.age} • {spotlightUser.payam} Payam
+              {spotlightUser ? (
+                <>
+                  <div className="flex items-start gap-4">
+                    <div className="w-16 h-16 bg-gradient-hero rounded-full flex items-center justify-center text-primary-foreground text-lg font-bold">
+                      {spotlightUser.name ? spotlightUser.name.split(' ').map((n: string) => n[0]).join('') : 'N/A'}
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold text-foreground">{spotlightUser.name}</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Age {spotlightUser.age} • {spotlightUser.payam} Payam
+                      </p>
+                      <Badge className="mt-2 bg-gradient-hero text-primary-foreground">
+                        Community Leader
+                      </Badge>
+                    </div>
+                  </div>
+                  
+                  <p className="text-muted-foreground leading-relaxed">
+                    {spotlightUser.achievement}
                   </p>
-                  <Badge className="mt-2 bg-gradient-hero text-primary-foreground">
-                    Community Leader
-                  </Badge>
-                </div>
-              </div>
-              
-              <p className="text-muted-foreground leading-relaxed">
-                {spotlightUser.achievement}
-              </p>
 
-              <div className="flex gap-2 pt-2">
-                <Button size="sm" className="bg-gradient-hero">
-                  <Calendar className="h-4 w-4 mr-2" />
-                  Read Full Story
-                </Button>
-                <Button size="sm" variant="outline">
-                  Nominate Someone
-                </Button>
-              </div>
+                  <div className="flex gap-2 pt-2">
+                    <Button size="sm" className="bg-gradient-hero">
+                      <Calendar className="h-4 w-4 mr-2" />
+                      Read Full Story
+                    </Button>
+                    <Button size="sm" variant="outline">
+                      Nominate Someone
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground">Loading spotlight...</p>
+                </div>
+              )}
             </CardContent>
           </Card>
 
