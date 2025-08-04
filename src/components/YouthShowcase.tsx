@@ -72,82 +72,6 @@ const YouthShowcase = () => {
     return colors[payam] || '#6B7280';
   };
 
-  // Mock data for fallback
-  const mockProfiles = [
-    {
-      name: "Akech Deng",
-      age: 24,
-      payam: "Jalle",
-      payamColor: "#059669",
-      profession: "Software Developer",
-      education: "Computer Science, University of Juba",
-      skills: ["React", "Python", "UI/UX Design", "Community Outreach"],
-      bio: "Passionate about using technology to solve local problems. Currently developing apps for agricultural management in rural communities.",
-      isVerified: true,
-      endorsements: 45,
-      spotlightWeek: true
-    },
-    {
-      name: "Peter Mach",
-      age: 22,
-      payam: "Anyidi",
-      payamColor: "#D97706",
-      profession: "Agricultural Extension Officer",
-      education: "Agricultural Sciences, Upper Nile University",
-      skills: ["Sustainable Farming", "Community Training", "Project Management"],
-      bio: "Working to improve crop yields and introduce modern farming techniques to smallholder farmers across Bor County.",
-      isVerified: true,
-      endorsements: 32
-    },
-    {
-      name: "Mary Ajak",
-      age: 26,
-      payam: "Baidit",
-      payamColor: "#2563EB",
-      profession: "Nurse & Health Educator",
-      education: "Nursing, Juba College of Nursing",
-      skills: ["Primary Healthcare", "Community Health", "Public Speaking", "Health Education"],
-      bio: "Dedicated to improving healthcare access in rural areas. Runs health awareness campaigns and maternal care programs.",
-      isVerified: true,
-      endorsements: 38
-    },
-    {
-      name: "Daniel Majok",
-      age: 20,
-      payam: "Kolnyang",
-      payamColor: "#7C3AED",
-      profession: "Student & Youth Organizer",
-      education: "Business Administration, University of Bor",
-      skills: ["Leadership", "Event Planning", "Public Speaking", "Social Media"],
-      bio: "Student leader organizing youth empowerment workshops and cultural events. Advocate for educational opportunities.",
-      isVerified: false,
-      endorsements: 28
-    },
-    {
-      name: "Grace Ayen",
-      age: 25,
-      payam: "Makuach",
-      payamColor: "#DC2626",
-      profession: "Teacher & Artist",
-      education: "Education, University of Juba",
-      skills: ["Primary Education", "Traditional Dance", "Art Therapy", "Cultural Preservation"],
-      bio: "Primary school teacher promoting cultural heritage through art and traditional storytelling in modern education.",
-      isVerified: true,
-      endorsements: 41
-    },
-    {
-      name: "John Garang",
-      age: 23,
-      payam: "Jalle",
-      payamColor: "#059669",
-      profession: "Entrepreneur",
-      education: "Business Management, Catholic University",
-      skills: ["Business Development", "Marketing", "Financial Planning", "Team Leadership"],
-      bio: "Founded a youth-led micro-finance cooperative supporting small businesses in Bor County.",
-      isVerified: false,
-      endorsements: 29
-    }
-  ];
 
   return (
     <section className="py-16 bg-muted/20">
@@ -284,9 +208,11 @@ const YouthShowcase = () => {
           }`}>
             {profiles.length > 0 ? profiles.map((profile, index) => (
               <YouthProfileCard key={index} {...profile} />
-            )) : mockProfiles.map((profile, index) => (
-              <YouthProfileCard key={index} {...profile} />
-            ))}
+            )) : (
+              <div className="text-center py-12 col-span-full">
+                <p className="text-muted-foreground">No youth profiles available yet.</p>
+              </div>
+            )}
           </div>
         )}
 
@@ -296,7 +222,7 @@ const YouthShowcase = () => {
             Load More Profiles
           </Button>
           <p className="text-sm text-muted-foreground mt-4">
-            Showing {profiles.length || mockProfiles.length} youth profiles
+            Showing {profiles.length} youth profiles
           </p>
         </div>
       </div>

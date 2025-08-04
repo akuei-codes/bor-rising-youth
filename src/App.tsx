@@ -11,6 +11,7 @@ import Projects from "./pages/Projects";
 import Opportunities from "./pages/Opportunities";
 import SignIn from "./pages/SignIn";
 import JoinCommunity from "./pages/JoinCommunity";
+import Admin from "./pages/Admin";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/opportunities" element={<Opportunities />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/join" element={<JoinCommunity />} />
+          <Route path="/admin" element={<Admin />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

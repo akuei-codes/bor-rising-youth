@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Globe, Users, MapPin } from "lucide-react";
 
@@ -22,22 +23,25 @@ const Header = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <a href="/" className="text-foreground hover:text-primary transition-colors">
+            <Link to="/" className="text-foreground hover:text-primary transition-colors">
               Home
-            </a>
-            <a href="/profiles" className="text-foreground hover:text-primary transition-colors">
+            </Link>
+            <Link to="/profiles" className="text-foreground hover:text-primary transition-colors">
               Profiles
-            </a>
-            <a href="/map" className="text-foreground hover:text-primary transition-colors flex items-center gap-1">
+            </Link>
+            <Link to="/map" className="text-foreground hover:text-primary transition-colors flex items-center gap-1">
               <MapPin className="h-4 w-4" />
               Map
-            </a>
-            <a href="/projects" className="text-foreground hover:text-primary transition-colors">
+            </Link>
+            <Link to="/projects" className="text-foreground hover:text-primary transition-colors">
               Projects
-            </a>
-            <a href="/opportunities" className="text-foreground hover:text-primary transition-colors">
+            </Link>
+            <Link to="/opportunities" className="text-foreground hover:text-primary transition-colors">
               Opportunities
-            </a>
+            </Link>
+            <Link to="/admin" className="text-foreground hover:text-primary transition-colors">
+              Admin
+            </Link>
           </nav>
 
           {/* Language Toggle & Auth */}
@@ -47,10 +51,10 @@ const Header = () => {
               EN
             </Button>
             <Button variant="outline" size="sm" asChild>
-              <a href="/signin">Sign In</a>
+              <Link to="/signin">Sign In</Link>
             </Button>
             <Button size="sm" className="bg-gradient-hero hover:shadow-warm transition-all" asChild>
-              <a href="/join">Join Community</a>
+              <Link to="/join">Join Community</Link>
             </Button>
           </div>
 
@@ -69,29 +73,32 @@ const Header = () => {
         {isMenuOpen && (
           <div className="md:hidden border-t border-border mt-2 pt-4 pb-4 space-y-4">
             <nav className="flex flex-col space-y-3">
-              <a href="/" className="text-foreground hover:text-primary transition-colors">
+              <Link to="/" className="text-foreground hover:text-primary transition-colors">
                 Home
-              </a>
-              <a href="/profiles" className="text-foreground hover:text-primary transition-colors">
+              </Link>
+              <Link to="/profiles" className="text-foreground hover:text-primary transition-colors">
                 Profiles
-              </a>
-              <a href="/map" className="text-foreground hover:text-primary transition-colors flex items-center gap-1">
+              </Link>
+              <Link to="/map" className="text-foreground hover:text-primary transition-colors flex items-center gap-1">
                 <MapPin className="h-4 w-4" />
                 Map
-              </a>
-              <a href="/projects" className="text-foreground hover:text-primary transition-colors">
+              </Link>
+              <Link to="/projects" className="text-foreground hover:text-primary transition-colors">
                 Projects
-              </a>
-              <a href="/opportunities" className="text-foreground hover:text-primary transition-colors">
+              </Link>
+              <Link to="/opportunities" className="text-foreground hover:text-primary transition-colors">
                 Opportunities
-              </a>
+              </Link>
+              <Link to="/admin" className="text-foreground hover:text-primary transition-colors">
+                Admin
+              </Link>
             </nav>
             <div className="flex flex-col space-y-2 pt-4 border-t border-border">
               <Button variant="outline" size="sm" className="w-full" asChild>
-                <a href="/signin">Sign In</a>
+                <Link to="/signin">Sign In</Link>
               </Button>
               <Button size="sm" className="w-full bg-gradient-hero hover:shadow-warm transition-all" asChild>
-                <a href="/join">Join Community</a>
+                <Link to="/join">Join Community</Link>
               </Button>
             </div>
           </div>
