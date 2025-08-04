@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -12,8 +13,13 @@ import {
   Calendar,
   ArrowRight
 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const CommunityFeatures = () => {
+  const [spotlightUser, setSpotlightUser] = useState<any>(null);
+  const [leaderboard, setLeaderboard] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const features = [
     {
       title: "Spotlight of the Week",
@@ -71,21 +77,77 @@ const CommunityFeatures = () => {
     }
   ];
 
-  const spotlightUser = {
-    name: "Akech Deng",
-    age: 24,
-    payam: "Jalle",
-    achievement: "Founded a digital literacy program that has trained over 200 youth in basic computer skills",
-    image: null
+  const payamColors: { [key: string]: string } = {
+    "Anyidi": "#D97706",
+    "Baidit": "#2563EB",
+    "Jalle": "#059669",
+    "Makuach": "#DC2626",
+    "Kolnyang": "#7C3AED"
   };
 
-  const leaderboard = [
-    { payam: "Anyidi", score: 2485, color: "#D97706", members: 125, change: "+12%" },
-    { payam: "Baidit", score: 2341, color: "#2563EB", members: 98, change: "+8%" },
-    { payam: "Jalle", score: 2298, color: "#059669", members: 87, change: "+15%" },
-    { payam: "Makuach", score: 2156, color: "#DC2626", members: 89, change: "+5%" },
-    { payam: "Kolnyang", score: 2089, color: "#7C3AED", members: 76, change: "+10%" }
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // For now, use fallback data since the tables may not be synced yet
+        // TODO: Replace with actual database queries once types are updated
+        
+        // Fallback spotlight data
+        setSpotlightUser({
+          name: "Akech Deng",
+          age: 24,
+          payam: "Jalle",
+          achievement: "Founded a digital literacy program that has trained over 200 youth in basic computer skills"
+        });
+
+        // Fallback leaderboard data
+        const fallbackLeaderboard = [
+          { payam: "Anyidi", score: 2485, members: 125, change: "+12%" },
+          { payam: "Baidit", score: 2341, members: 98, change: "+8%" },
+          { payam: "Jalle", score: 2298, members: 87, change: "+15%" },
+          { payam: "Makuach", score: 2156, members: 89, change: "+5%" },
+          { payam: "Kolnyang", score: 2089, members: 76, change: "+10%" }
+        ].map(item => ({
+          ...item,
+          color: payamColors[item.payam] || "#6B7280"
+        }));
+
+        setLeaderboard(fallbackLeaderboard);
+        
+        // Uncomment this when the database types are updated:
+        /*
+        const { data: spotlightData } = await supabase
+          .from('weekly_spotlights')
+          .select('*')
+          .eq('is_current', true)
+          .maybeSingle();
+
+        if (spotlightData) {
+          setSpotlightUser(spotlightData);
+        }
+
+        const { data: leaderboardData } = await supabase
+          .from('payam_leaderboard')
+          .select('*')
+          .order('score', { ascending: false })
+          .limit(5);
+
+        if (leaderboardData) {
+          const formattedLeaderboard = leaderboardData.map(item => ({
+            ...item,
+            color: payamColors[item.payam] || "#6B7280"
+          }));
+          setLeaderboard(formattedLeaderboard);
+        }
+        */
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <section className="py-16 bg-background">
