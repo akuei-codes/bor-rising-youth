@@ -14,16 +14,142 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          achievements: string[] | null
+          bio: string | null
+          birthday: string | null
+          community_roles: string[] | null
+          created_at: string | null
+          current_profession: string | null
+          display_name: string | null
+          education_level: Database["public"]["Enums"]["education_level"] | null
+          email_public: string | null
+          endorsements: number | null
+          facebook_url: string | null
+          field_of_study: string | null
+          graduation_year: number | null
+          id: string
+          institution: string | null
+          interests: string[] | null
+          is_profile_complete: boolean | null
+          is_verified: boolean | null
+          languages: string[] | null
+          legal_name: string | null
+          linkedin_url: string | null
+          location: string | null
+          payam: Database["public"]["Enums"]["payam_type"] | null
+          phone_number: string | null
+          profile_picture_url: string | null
+          profile_views: number | null
+          sex: Database["public"]["Enums"]["sex_type"] | null
+          show_age_publicly: boolean | null
+          skills: string[] | null
+          updated_at: string | null
+          user_id: string
+          volunteer_experience: Json | null
+          website_url: string | null
+          work_experience: Json | null
+        }
+        Insert: {
+          achievements?: string[] | null
+          bio?: string | null
+          birthday?: string | null
+          community_roles?: string[] | null
+          created_at?: string | null
+          current_profession?: string | null
+          display_name?: string | null
+          education_level?:
+            | Database["public"]["Enums"]["education_level"]
+            | null
+          email_public?: string | null
+          endorsements?: number | null
+          facebook_url?: string | null
+          field_of_study?: string | null
+          graduation_year?: number | null
+          id?: string
+          institution?: string | null
+          interests?: string[] | null
+          is_profile_complete?: boolean | null
+          is_verified?: boolean | null
+          languages?: string[] | null
+          legal_name?: string | null
+          linkedin_url?: string | null
+          location?: string | null
+          payam?: Database["public"]["Enums"]["payam_type"] | null
+          phone_number?: string | null
+          profile_picture_url?: string | null
+          profile_views?: number | null
+          sex?: Database["public"]["Enums"]["sex_type"] | null
+          show_age_publicly?: boolean | null
+          skills?: string[] | null
+          updated_at?: string | null
+          user_id: string
+          volunteer_experience?: Json | null
+          website_url?: string | null
+          work_experience?: Json | null
+        }
+        Update: {
+          achievements?: string[] | null
+          bio?: string | null
+          birthday?: string | null
+          community_roles?: string[] | null
+          created_at?: string | null
+          current_profession?: string | null
+          display_name?: string | null
+          education_level?:
+            | Database["public"]["Enums"]["education_level"]
+            | null
+          email_public?: string | null
+          endorsements?: number | null
+          facebook_url?: string | null
+          field_of_study?: string | null
+          graduation_year?: number | null
+          id?: string
+          institution?: string | null
+          interests?: string[] | null
+          is_profile_complete?: boolean | null
+          is_verified?: boolean | null
+          languages?: string[] | null
+          legal_name?: string | null
+          linkedin_url?: string | null
+          location?: string | null
+          payam?: Database["public"]["Enums"]["payam_type"] | null
+          phone_number?: string | null
+          profile_picture_url?: string | null
+          profile_views?: number | null
+          sex?: Database["public"]["Enums"]["sex_type"] | null
+          show_age_publicly?: boolean | null
+          skills?: string[] | null
+          updated_at?: string | null
+          user_id?: string
+          volunteer_experience?: Json | null
+          website_url?: string | null
+          work_experience?: Json | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      calculate_age: {
+        Args: { birthday: string }
+        Returns: number
+      }
     }
     Enums: {
-      [_ in never]: never
+      education_level:
+        | "Primary"
+        | "Secondary"
+        | "Diploma"
+        | "Bachelor"
+        | "Master"
+        | "PhD"
+        | "Other"
+      payam_type: "Anyidi" | "Baidit" | "Jalle" | "Kolnyang" | "Makuach"
+      sex_type: "Male" | "Female"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +276,18 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      education_level: [
+        "Primary",
+        "Secondary",
+        "Diploma",
+        "Bachelor",
+        "Master",
+        "PhD",
+        "Other",
+      ],
+      payam_type: ["Anyidi", "Baidit", "Jalle", "Kolnyang", "Makuach"],
+      sex_type: ["Male", "Female"],
+    },
   },
 } as const
