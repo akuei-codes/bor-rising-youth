@@ -1,39 +1,72 @@
+import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { MapPin, Users, Building, Briefcase } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
-const mapData = [
-  {
-    id: 1,
-    name: "Bor Central Hub",
-    type: "Community Center",
-    location: "Central Bor",
-    members: 45,
-    description: "Main gathering place for youth activities and workshops",
-    coordinates: { lat: 6.2088, lng: 31.5590 }
-  },
-  {
-    id: 2,
-    name: "Tech Innovation Space",
-    type: "Workspace",
-    location: "Bor Town",
-    members: 28,
-    description: "Co-working space for technology and innovation projects",
-    coordinates: { lat: 6.2100, lng: 31.5580 }
-  },
-  {
-    id: 3,
-    name: "Agricultural Learning Center",
-    type: "Training Facility", 
-    location: "Rural Bor",
-    members: 62,
-    description: "Training center for modern farming techniques",
-    coordinates: { lat: 6.2050, lng: 31.5610 }
-  }
-];
+interface CommunityLocation {
+  id: string;
+  name: string;
+  type: string;
+  location: string;
+  members: number;
+  description: string;
+  latitude?: number;
+  longitude?: number;
+}
 
 const Map = () => {
+  const [locations, setLocations] = useState<CommunityLocation[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    fetchLocations();
+  }, []);
+
+  const fetchLocations = async () => {
+    try {
+      const { data, error } = await (supabase as any)
+        .from('community_locations')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setLocations(data as any || []);
+    } catch (error) {
+      console.error('Error fetching locations:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load community locations. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getLocationIcon = (type: string) => {
+    switch (type) {
+      case "Community Center": return <Users className="h-3 w-3" />;
+      case "Workspace": return <Briefcase className="h-3 w-3" />;
+      case "Training Facility": return <Building className="h-3 w-3" />;
+      default: return <MapPin className="h-3 w-3" />;
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <div className="container mx-auto px-4 py-8">
+          <div className="text-center">Loading community locations...</div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -66,8 +99,8 @@ const Map = () => {
 
             {/* Locations List */}
             <div className="order-1 lg:order-2 space-y-4">
-              <h2 className="text-2xl font-bold mb-6">Key Locations</h2>
-              {mapData.map((location) => (
+              <h2 className="text-2xl font-bold mb-6">Key Locations ({locations.length})</h2>
+              {locations.map((location) => (
                 <Card key={location.id} className="hover:shadow-warm transition-all duration-300">
                   <CardHeader>
                     <div className="flex items-start justify-between">
@@ -79,9 +112,7 @@ const Map = () => {
                         </div>
                       </div>
                       <div className="flex items-center gap-1 text-sm bg-gradient-hero text-primary-foreground px-2 py-1 rounded-full">
-                        {location.type === "Community Center" && <Users className="h-3 w-3" />}
-                        {location.type === "Workspace" && <Briefcase className="h-3 w-3" />}
-                        {location.type === "Training Facility" && <Building className="h-3 w-3" />}
+                        {getLocationIcon(location.type)}
                         <span className="text-xs">{location.type}</span>
                       </div>
                     </div>
@@ -100,6 +131,12 @@ const Map = () => {
                   </CardContent>
                 </Card>
               ))}
+              
+              {locations.length === 0 && (
+                <div className="text-center py-12">
+                  <p className="text-muted-foreground">No community locations available. Be the first to add one!</p>
+                </div>
+              )}
             </div>
           </div>
         </div>

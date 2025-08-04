@@ -1,62 +1,56 @@
+import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Calendar, Users, Target, TrendingUp } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
-const projects = [
-  {
-    id: 1,
-    title: "Digital Literacy Program",
-    description: "Teaching computer skills and digital literacy to youth and adults in rural areas",
-    category: "Education",
-    status: "Active",
-    progress: 75,
-    startDate: "2024-01-15",
-    participants: 120,
-    goal: "Train 200 people in basic computer skills",
-    lead: "Amal Deng"
-  },
-  {
-    id: 2,
-    title: "Sustainable Agriculture Initiative",
-    description: "Implementing modern farming techniques and sustainable practices",
-    category: "Agriculture", 
-    status: "Planning",
-    progress: 25,
-    startDate: "2024-03-01",
-    participants: 85,
-    goal: "Increase crop yield by 40%",
-    lead: "John Garang"
-  },
-  {
-    id: 3,
-    title: "Youth Entrepreneurship Hub",
-    description: "Supporting young entrepreneurs with mentorship and resources",
-    category: "Business",
-    status: "Active",
-    progress: 60,
-    startDate: "2023-10-10",
-    participants: 45,
-    goal: "Launch 15 new businesses",
-    lead: "Mary Akuei"
-  },
-  {
-    id: 4,
-    title: "Community Health Outreach",
-    description: "Mobile health clinics and health education programs",
-    category: "Healthcare",
-    status: "Completed",
-    progress: 100,
-    startDate: "2023-08-01",
-    participants: 200,
-    goal: "Reach 500 community members",
-    lead: "Dr. Rebecca Majok"
-  }
-];
+interface Project {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  status: string;
+  progress: number;
+  start_date: string;
+  participants: number;
+  goal: string;
+  lead_name: string;
+}
 
 const Projects = () => {
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    fetchProjects();
+  }, []);
+
+  const fetchProjects = async () => {
+    try {
+      const { data, error } = await (supabase as any)
+        .from('projects')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setProjects(data as any || []);
+    } catch (error) {
+      console.error('Error fetching projects:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load projects. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Active": return "bg-green-500";
@@ -65,6 +59,17 @@ const Projects = () => {
       default: return "bg-gray-500";
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <div className="container mx-auto px-4 py-8">
+          <div className="text-center">Loading projects...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -85,29 +90,29 @@ const Projects = () => {
             <Card>
               <CardContent className="p-6 text-center">
                 <TrendingUp className="h-8 w-8 mx-auto mb-2 text-primary" />
-                <div className="text-2xl font-bold">12</div>
+                <div className="text-2xl font-bold">{projects.filter(p => p.status === 'Active').length}</div>
                 <div className="text-muted-foreground text-sm">Active Projects</div>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-6 text-center">
                 <Users className="h-8 w-8 mx-auto mb-2 text-primary" />
-                <div className="text-2xl font-bold">450+</div>
+                <div className="text-2xl font-bold">{projects.reduce((sum, p) => sum + p.participants, 0)}+</div>
                 <div className="text-muted-foreground text-sm">Participants</div>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-6 text-center">
                 <Target className="h-8 w-8 mx-auto mb-2 text-primary" />
-                <div className="text-2xl font-bold">8</div>
+                <div className="text-2xl font-bold">{projects.filter(p => p.status === 'Completed').length}</div>
                 <div className="text-muted-foreground text-sm">Completed</div>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-6 text-center">
                 <Calendar className="h-8 w-8 mx-auto mb-2 text-primary" />
-                <div className="text-2xl font-bold">6</div>
-                <div className="text-muted-foreground text-sm">Months Avg.</div>
+                <div className="text-2xl font-bold">{projects.length}</div>
+                <div className="text-muted-foreground text-sm">Total Projects</div>
               </CardContent>
             </Card>
           </div>
@@ -144,7 +149,9 @@ const Projects = () => {
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
                       <div className="text-muted-foreground">Start Date</div>
-                      <div className="font-medium">{new Date(project.startDate).toLocaleDateString()}</div>
+                      <div className="font-medium">
+                        {project.start_date ? new Date(project.start_date).toLocaleDateString() : 'Not set'}
+                      </div>
                     </div>
                     <div>
                       <div className="text-muted-foreground">Participants</div>
@@ -152,15 +159,19 @@ const Projects = () => {
                     </div>
                   </div>
 
-                  <div>
-                    <div className="text-muted-foreground text-sm mb-1">Goal</div>
-                    <div className="text-sm">{project.goal}</div>
-                  </div>
+                  {project.goal && (
+                    <div>
+                      <div className="text-muted-foreground text-sm mb-1">Goal</div>
+                      <div className="text-sm">{project.goal}</div>
+                    </div>
+                  )}
 
-                  <div>
-                    <div className="text-muted-foreground text-sm mb-1">Project Lead</div>
-                    <div className="text-sm font-medium">{project.lead}</div>
-                  </div>
+                  {project.lead_name && (
+                    <div>
+                      <div className="text-muted-foreground text-sm mb-1">Project Lead</div>
+                      <div className="text-sm font-medium">{project.lead_name}</div>
+                    </div>
+                  )}
 
                   <Button className="w-full bg-gradient-hero hover:shadow-warm transition-all">
                     Learn More
@@ -169,6 +180,12 @@ const Projects = () => {
               </Card>
             ))}
           </div>
+
+          {projects.length === 0 && (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground">No projects found. Be the first to create one!</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
