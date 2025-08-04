@@ -4,9 +4,48 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/components/ui/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import { Mail, Lock, Users } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const SignIn = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { signIn, user } = useAuth();
+  const { toast } = useToast();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
+
+  const handleSignIn = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const { error } = await signIn(email, password);
+    
+    if (error) {
+      toast({
+        title: "Sign in failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Welcome back!",
+        description: "You have successfully signed in.",
+      });
+    }
+    
+    setLoading(false);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -27,7 +66,7 @@ const SignIn = () => {
               <CardTitle className="text-center">Sign In</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="space-y-4">
+              <form onSubmit={handleSignIn} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
                   <div className="relative">
@@ -37,6 +76,9 @@ const SignIn = () => {
                       type="email"
                       placeholder="Enter your email"
                       className="pl-10"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
                     />
                   </div>
                 </div>
@@ -49,24 +91,31 @@ const SignIn = () => {
                       type="password"
                       placeholder="Enter your password"
                       className="pl-10"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
                     />
                   </div>
                 </div>
-              </div>
 
-              <div className="flex items-center justify-between text-sm">
-                <label className="flex items-center space-x-2">
-                  <input type="checkbox" className="rounded" />
-                  <span>Remember me</span>
-                </label>
-                <a href="#" className="text-primary hover:underline">
-                  Forgot password?
-                </a>
-              </div>
+                <div className="flex items-center justify-between text-sm">
+                  <label className="flex items-center space-x-2">
+                    <input type="checkbox" className="rounded" />
+                    <span>Remember me</span>
+                  </label>
+                  <a href="#" className="text-primary hover:underline">
+                    Forgot password?
+                  </a>
+                </div>
 
-              <Button className="w-full bg-gradient-hero hover:shadow-warm transition-all">
-                Sign In
-              </Button>
+                <Button 
+                  type="submit" 
+                  className="w-full bg-gradient-hero hover:shadow-warm transition-all"
+                  disabled={loading}
+                >
+                  {loading ? "Signing In..." : "Sign In"}
+                </Button>
+              </form>
 
               <div className="relative">
                 <Separator />

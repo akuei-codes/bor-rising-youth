@@ -6,9 +6,107 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/components/ui/use-toast";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 import { Users, Mail, User, Phone, MapPin, Briefcase } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const JoinCommunity = () => {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    firstName: "",
+    lastName: "",
+    phone: "",
+    age: "",
+    location: "",
+    interests: "",
+    skills: "",
+    bio: "",
+    motivation: "",
+    terms: false,
+    newsletter: false,
+  });
+  const [loading, setLoading] = useState(false);
+  const { signUp, user } = useAuth();
+  const { toast } = useToast();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
+
+  const handleChange = (field: string, value: any) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!formData.terms) {
+      toast({
+        title: "Please accept terms",
+        description: "You must accept the terms of service to continue.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setLoading(true);
+
+    // Sign up the user
+    const { error } = await signUp(formData.email, formData.password, {
+      name: `${formData.firstName} ${formData.lastName}`,
+      first_name: formData.firstName,
+      last_name: formData.lastName,
+    });
+
+    if (error) {
+      toast({
+        title: "Sign up failed",
+        description: error.message,
+        variant: "destructive",
+      });
+      setLoading(false);
+      return;
+    }
+
+    // The profile will be created automatically by the trigger
+    // After signup, we'll update it with additional info
+    setTimeout(async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const skillsArray = formData.skills.split(',').map(s => s.trim()).filter(s => s);
+        const interestsArray = formData.interests ? [formData.interests] : [];
+        
+        await supabase
+          .from('profiles')
+          .update({
+            legal_name: `${formData.firstName} ${formData.lastName}`,
+            display_name: `${formData.firstName} ${formData.lastName}`,
+            phone_number: formData.phone || null,
+            location: formData.location || null,
+            skills: skillsArray,
+            interests: interestsArray,
+            bio: formData.bio || null,
+            birthday: formData.age ? new Date(Date.now() - parseInt(formData.age) * 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] : null,
+          })
+          .eq('user_id', user.id);
+      }
+    }, 1000);
+
+    toast({
+      title: "Welcome to Bor Rising!",
+      description: "Please check your email to verify your account.",
+    });
+    
+    setLoading(false);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -29,161 +127,204 @@ const JoinCommunity = () => {
               <CardTitle className="text-center">Create Your Profile</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="firstName">First Name</Label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="firstName"
-                      placeholder="Enter your first name"
-                      className="pl-10"
-                    />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="lastName">Last Name</Label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="lastName"
-                      placeholder="Enter your last name"
-                      className="pl-10"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="email">Email Address</Label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="Enter your email"
-                    className="pl-10"
-                  />
-                </div>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Phone Number</Label>
-                  <div className="relative">
-                    <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="phone"
-                      placeholder="Enter your phone number"
-                      className="pl-10"
-                    />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="age">Age</Label>
-                  <Input
-                    id="age"
-                    type="number"
-                    placeholder="Enter your age"
-                    min="16"
-                    max="35"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="location">Location</Label>
-                <div className="relative">
-                  <MapPin className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    id="location"
-                    placeholder="e.g., Bor, South Sudan"
-                    className="pl-10"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="interests">Areas of Interest</Label>
-                <Select>
-                  <SelectTrigger>
-                    <div className="flex items-center gap-2">
-                      <Briefcase className="h-4 w-4 text-muted-foreground" />
-                      <SelectValue placeholder="Select your main area of interest" />
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="firstName">First Name</Label>
+                    <div className="relative">
+                      <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="firstName"
+                        placeholder="Enter your first name"
+                        className="pl-10"
+                        value={formData.firstName}
+                        onChange={(e) => handleChange('firstName', e.target.value)}
+                        required
+                      />
                     </div>
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="technology">Technology & Innovation</SelectItem>
-                    <SelectItem value="agriculture">Agriculture & Farming</SelectItem>
-                    <SelectItem value="education">Education & Training</SelectItem>
-                    <SelectItem value="healthcare">Healthcare & Wellness</SelectItem>
-                    <SelectItem value="business">Business & Entrepreneurship</SelectItem>
-                    <SelectItem value="arts">Arts & Culture</SelectItem>
-                    <SelectItem value="environment">Environment & Sustainability</SelectItem>
-                    <SelectItem value="community">Community Development</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="skills">Skills & Expertise</Label>
-                <Input
-                  id="skills"
-                  placeholder="e.g., Web Development, Leadership, Photography (comma-separated)"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="bio">Tell us about yourself</Label>
-                <Textarea
-                  id="bio"
-                  placeholder="Share your background, goals, and how you'd like to contribute to the community..."
-                  rows={4}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="motivation">Why do you want to join Bor Rising?</Label>
-                <Textarea
-                  id="motivation"
-                  placeholder="What motivates you to be part of this community?"
-                  rows={3}
-                />
-              </div>
-
-              <div className="space-y-4">
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    id="terms"
-                    className="rounded"
-                  />
-                  <Label htmlFor="terms" className="text-sm">
-                    I agree to the{" "}
-                    <a href="#" className="text-primary hover:underline">
-                      Terms of Service
-                    </a>{" "}
-                    and{" "}
-                    <a href="#" className="text-primary hover:underline">
-                      Privacy Policy
-                    </a>
-                  </Label>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="lastName">Last Name</Label>
+                    <div className="relative">
+                      <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="lastName"
+                        placeholder="Enter your last name"
+                        className="pl-10"
+                        value={formData.lastName}
+                        onChange={(e) => handleChange('lastName', e.target.value)}
+                        required
+                      />
+                    </div>
+                  </div>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    id="newsletter"
-                    className="rounded"
-                  />
-                  <Label htmlFor="newsletter" className="text-sm">
-                    I'd like to receive community updates and opportunities via email
-                  </Label>
-                </div>
-              </div>
 
-              <Button className="w-full bg-gradient-hero hover:shadow-warm transition-all">
-                Join the Community
-              </Button>
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email Address</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="Enter your email"
+                      className="pl-10"
+                      value={formData.email}
+                      onChange={(e) => handleChange('email', e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="password">Password</Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="Create a secure password"
+                    value={formData.password}
+                    onChange={(e) => handleChange('password', e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="phone">Phone Number</Label>
+                    <div className="relative">
+                      <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="phone"
+                        placeholder="Enter your phone number"
+                        className="pl-10"
+                        value={formData.phone}
+                        onChange={(e) => handleChange('phone', e.target.value)}
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="age">Age</Label>
+                    <Input
+                      id="age"
+                      type="number"
+                      placeholder="Enter your age"
+                      min="16"
+                      max="35"
+                      value={formData.age}
+                      onChange={(e) => handleChange('age', e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="location">Location</Label>
+                  <div className="relative">
+                    <MapPin className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="location"
+                      placeholder="e.g., Bor, South Sudan"
+                      className="pl-10"
+                      value={formData.location}
+                      onChange={(e) => handleChange('location', e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="interests">Areas of Interest</Label>
+                  <Select onValueChange={(value) => handleChange('interests', value)}>
+                    <SelectTrigger>
+                      <div className="flex items-center gap-2">
+                        <Briefcase className="h-4 w-4 text-muted-foreground" />
+                        <SelectValue placeholder="Select your main area of interest" />
+                      </div>
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="technology">Technology & Innovation</SelectItem>
+                      <SelectItem value="agriculture">Agriculture & Farming</SelectItem>
+                      <SelectItem value="education">Education & Training</SelectItem>
+                      <SelectItem value="healthcare">Healthcare & Wellness</SelectItem>
+                      <SelectItem value="business">Business & Entrepreneurship</SelectItem>
+                      <SelectItem value="arts">Arts & Culture</SelectItem>
+                      <SelectItem value="environment">Environment & Sustainability</SelectItem>
+                      <SelectItem value="community">Community Development</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="skills">Skills & Expertise</Label>
+                  <Input
+                    id="skills"
+                    placeholder="e.g., Web Development, Leadership, Photography (comma-separated)"
+                    value={formData.skills}
+                    onChange={(e) => handleChange('skills', e.target.value)}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="bio">Tell us about yourself</Label>
+                  <Textarea
+                    id="bio"
+                    placeholder="Share your background, goals, and how you'd like to contribute to the community..."
+                    rows={4}
+                    value={formData.bio}
+                    onChange={(e) => handleChange('bio', e.target.value)}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="motivation">Why do you want to join Bor Rising?</Label>
+                  <Textarea
+                    id="motivation"
+                    placeholder="What motivates you to be part of this community?"
+                    rows={3}
+                    value={formData.motivation}
+                    onChange={(e) => handleChange('motivation', e.target.value)}
+                  />
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      id="terms"
+                      className="rounded"
+                      checked={formData.terms}
+                      onChange={(e) => handleChange('terms', e.target.checked)}
+                    />
+                    <Label htmlFor="terms" className="text-sm">
+                      I agree to the{" "}
+                      <a href="#" className="text-primary hover:underline">
+                        Terms of Service
+                      </a>{" "}
+                      and{" "}
+                      <a href="#" className="text-primary hover:underline">
+                        Privacy Policy
+                      </a>
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      id="newsletter"
+                      className="rounded"
+                      checked={formData.newsletter}
+                      onChange={(e) => handleChange('newsletter', e.target.checked)}
+                    />
+                    <Label htmlFor="newsletter" className="text-sm">
+                      I'd like to receive community updates and opportunities via email
+                    </Label>
+                  </div>
+                </div>
+
+                <Button 
+                  type="submit" 
+                  className="w-full bg-gradient-hero hover:shadow-warm transition-all"
+                  disabled={loading}
+                >
+                  {loading ? "Creating Account..." : "Join the Community"}
+                </Button>
+              </form>
 
               <div className="relative">
                 <Separator />

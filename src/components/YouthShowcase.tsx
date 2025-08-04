@@ -1,14 +1,79 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import YouthProfileCard from "./YouthProfileCard";
+import { supabase } from "@/integrations/supabase/client";
 import { Filter, Search, Grid, List } from "lucide-react";
 
 const YouthShowcase = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [filterOpen, setFilterOpen] = useState(false);
+  const [profiles, setProfiles] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Mock data for youth profiles
-  const youthProfiles = [
+  useEffect(() => {
+    fetchProfiles();
+  }, []);
+
+  const fetchProfiles = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('is_profile_complete', true)
+        .order('created_at', { ascending: false })
+        .limit(6);
+
+      if (error) throw error;
+      
+      // Transform the data to match YouthProfileCard props
+      const transformedProfiles = data?.map(profile => ({
+        name: profile.display_name || 'Anonymous',
+        age: profile.birthday ? calculateAge(profile.birthday) : null,
+        payam: profile.payam || 'Unknown',
+        payamColor: getPayamColor(profile.payam),
+        profession: profile.current_profession || 'Not specified',
+        education: profile.education_level ? `${profile.education_level}${profile.institution ? `, ${profile.institution}` : ''}` : 'Not specified',
+        skills: profile.skills || [],
+        bio: profile.bio || 'No bio available',
+        isVerified: profile.is_verified || false,
+        endorsements: profile.endorsements || 0,
+        spotlightWeek: false, // This could be determined by some criteria
+        photo: profile.profile_picture_url
+      })) || [];
+
+      setProfiles(transformedProfiles);
+    } catch (error) {
+      console.error('Error fetching profiles:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const calculateAge = (birthday: string) => {
+    if (!birthday) return null;
+    const today = new Date();
+    const birthDate = new Date(birthday);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
+  const getPayamColor = (payam: string) => {
+    const colors: { [key: string]: string } = {
+      'Anyidi': '#D97706',
+      'Baidit': '#2563EB', 
+      'Jalle': '#059669',
+      'Kolnyang': '#7C3AED',
+      'Makuach': '#DC2626'
+    };
+    return colors[payam] || '#6B7280';
+  };
+
+  // Mock data for fallback
+  const mockProfiles = [
     {
       name: "Akech Deng",
       age: 24,
@@ -207,15 +272,23 @@ const YouthShowcase = () => {
         )}
 
         {/* Youth Profiles Grid */}
-        <div className={`grid gap-6 ${
-          viewMode === 'grid' 
-            ? 'md:grid-cols-2 lg:grid-cols-3' 
-            : 'max-w-4xl mx-auto'
-        }`}>
-          {youthProfiles.map((profile, index) => (
-            <YouthProfileCard key={index} {...profile} />
-          ))}
-        </div>
+        {loading ? (
+          <div className="text-center py-8">
+            <p className="text-muted-foreground">Loading profiles...</p>
+          </div>
+        ) : (
+          <div className={`grid gap-6 ${
+            viewMode === 'grid' 
+              ? 'md:grid-cols-2 lg:grid-cols-3' 
+              : 'max-w-4xl mx-auto'
+          }`}>
+            {profiles.length > 0 ? profiles.map((profile, index) => (
+              <YouthProfileCard key={index} {...profile} />
+            )) : mockProfiles.map((profile, index) => (
+              <YouthProfileCard key={index} {...profile} />
+            ))}
+          </div>
+        )}
 
         {/* Load More */}
         <div className="text-center mt-12">
@@ -223,7 +296,7 @@ const YouthShowcase = () => {
             Load More Profiles
           </Button>
           <p className="text-sm text-muted-foreground mt-4">
-            Showing 6 of 475 youth profiles
+            Showing {profiles.length || mockProfiles.length} youth profiles
           </p>
         </div>
       </div>
